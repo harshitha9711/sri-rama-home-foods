@@ -455,6 +455,13 @@ export default function ProductDetails() {
 
         setAdded(true);
 
+window.dispatchEvent(
+  new CustomEvent("homefoods-toast", {
+    detail: {
+      message: `${product.name} added to cart`,
+    },
+  })
+);
         setTimeout(() => {
           setAdded(false);
         }, 1800);

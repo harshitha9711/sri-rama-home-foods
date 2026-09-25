@@ -10,6 +10,7 @@ import {
   CheckCircle2,
   Truck,
   XCircle,
+  FolderTree,
 } from "lucide-react";
 
 import { useAuth } from "../../context/AuthContext";
@@ -362,7 +363,13 @@ export default function AdminDashboard() {
             text="Manage products and variants"
             to="/admin/products"
           />
-
+<StatCard
+  icon={<FolderTree size={21} />}
+  title="Categories"
+  value="5"
+  text="Manage category images"
+  to="/admin/categories"
+/>
  <StatCard
   icon={<ShoppingBag size={21} />}
   title="Orders"
@@ -371,12 +378,6 @@ export default function AdminDashboard() {
   to="/admin/orders"
 />
 
-          <StatCard
-            icon={<Users size={21} />}
-            title="Customers"
-            value="—"
-            text="Customer management"
-          />
 
           <StatCard
             icon={<ShoppingBag size={21} />}

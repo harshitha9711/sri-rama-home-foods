@@ -62,7 +62,7 @@ export default function Navbar() {
           </Link>
 
           <Link
-            to="/shop/pickles"
+            to="/categories"
             className="text-sm font-semibold transition hover:text-brand-green"
           >
             Categories

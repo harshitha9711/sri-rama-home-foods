@@ -16,6 +16,25 @@ export default function ProductCard({ product }) {
   const foodType=product.food_type==="non_veg"?"non_veg":"veg";
   useEffect(()=>{if(!isAuthenticated)return;let cancelled=false;(async()=>{try{const r=await fetch(`${API_URL}/api/wishlist`,{headers:{Authorization:`Bearer ${getToken()}`}});const d=await r.json();if(!cancelled&&r.ok&&d.success)setWishlisted((d.wishlist||[]).some(i=>Number(i.product_id)===Number(product.id)))}catch{}})();return()=>{cancelled=true}},[product.id,isAuthenticated]);
   async function toggleWishlist(e){e.preventDefault();e.stopPropagation();if(!isAuthenticated){navigate("/login");return}if(wishLoading)return;try{setWishLoading(true);const r=await fetch(`${API_URL}/api/wishlist/${product.id}`,{method:wishlisted?"DELETE":"POST",headers:{Authorization:`Bearer ${getToken()}`}});const d=await r.json();if(!r.ok||!d.success)throw Error(d.message||"Wishlist update failed");setWishlisted(!wishlisted)}catch(e){console.error("Wishlist update error:",e)}finally{setWishLoading(false)}}
-  async function handleAddToCart(e){e.preventDefault();e.stopPropagation();if(!firstVariant)return;try{await addToCart(product,firstVariant)}catch(error){console.error("Add to cart error:",error)}}
+ async function handleAddToCart(e) {
+  e.preventDefault();
+  e.stopPropagation();
+
+  if (!firstVariant) return;
+
+  try {
+    await addToCart(product, firstVariant);
+
+    window.dispatchEvent(
+      new CustomEvent("homefoods-toast", {
+        detail: {
+          message: `${product.name} added to cart`,
+        },
+      })
+    );
+  } catch (error) {
+    console.error("Add to cart error:", error);
+  }
+}
   return <article className="group overflow-hidden rounded-[1.25rem] border border-black/5 bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl sm:rounded-[1.5rem]"><Link to={`/product/${product.slug}`} className="relative block aspect-square overflow-hidden bg-[#f1eadb]"><div className="absolute left-2.5 top-2.5 z-10 sm:left-3 sm:top-3"><VegBadge type={foodType}/></div><button type="button" onClick={toggleWishlist} aria-label={wishlisted?`Remove ${product.name} from wishlist`:`Add ${product.name} to wishlist`} className={`absolute right-2.5 top-2.5 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/95 shadow-sm transition hover:scale-105 sm:right-3 sm:top-3 sm:h-10 sm:w-10 ${wishlisted?"text-red-500":"text-black/60 hover:text-brand-green"}`}><Heart size={17} fill={wishlisted?"currentColor":"none"}/></button>{image?<img src={image} alt={product.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"/>:<div className="flex h-full w-full items-center justify-center px-4 text-center"><div><div className="mx-auto grid h-14 w-14 place-items-center rounded-full bg-brand-green/10"><ShoppingBag size={24} className="text-brand-green"/></div><p className="mt-2 text-[10px] font-bold text-black/40">Product image coming soon</p></div></div>}<div className="absolute inset-x-0 bottom-0 hidden translate-y-full bg-brand-green/95 px-4 py-3 text-center text-xs font-extrabold text-white transition-transform duration-300 group-hover:translate-y-0 sm:block">VIEW PRODUCT</div></Link><div className="p-3.5 sm:p-5"><Link to={`/product/${product.slug}`}><h3 className="line-clamp-1 text-sm font-extrabold text-brand-ink transition hover:text-brand-green sm:text-lg">{product.name}</h3></Link><div className="mt-3 sm:mt-4"><div className="flex items-center gap-2"><p className="text-base font-black text-brand-green sm:text-xl">₹{displayPrice}</p>{originalPrice&&originalPrice>displayPrice&&<p className="text-[10px] font-medium text-black/35 line-through sm:text-xs">₹{originalPrice}</p>}</div><p className="mt-0.5 text-[9px] font-medium text-black/40 sm:text-[10px]">{firstVariant?.label||"Available"}</p></div><button type="button" onClick={handleAddToCart} disabled={!firstVariant||Number(firstVariant.stock_quantity)<=0} className="mt-3 flex w-full items-center justify-center gap-1.5 rounded-full bg-brand-green px-3 py-2.5 text-[10px] font-extrabold text-white transition hover:bg-brand-green-dark active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40 sm:mt-4 sm:py-3 sm:text-xs"><ShoppingBag size={14}/>{firstVariant&&Number(firstVariant.stock_quantity)>0?"ADD TO CART":"OUT OF STOCK"}</button></div></article>
 }

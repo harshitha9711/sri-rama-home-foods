@@ -13,6 +13,7 @@ const wishlistRoutes = require("./routes/wishlistRoutes");
 const addressRoutes = require("./routes/addressRoutes");
 const orderRoutes = require("./routes/orderRoutes");
 const productImageRoutes = require("./routes/productImageRoutes");
+const guestOrderRoutes = require("./routes/guestOrderRoutes");
 
 const { protect } = require("./middleware/authMiddleware");
 
@@ -141,7 +142,7 @@ app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/addresses", addressRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/product-images", productImageRoutes);
-
+app.use("/api/guest-orders", guestOrderRoutes);
 // --------------------------------------------------
 // 404 HANDLER
 // --------------------------------------------------
