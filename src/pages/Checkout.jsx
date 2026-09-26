@@ -12,7 +12,7 @@ const API_URL =
   import.meta.env.VITE_API_BASE_URL ||
   "http://localhost:5000";
 
-const WHATSAPP_NUMBER = "919441488444";
+const WHATSAPP_NUMBER = "919948584971";
 
 export default function Checkout() {
   const navigate = useNavigate();
